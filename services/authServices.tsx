@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, signOut, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, signOut, updateProfile } from "firebase/auth";
 import { auth, provider } from "../firebase";
 import { getRedirectResult } from "firebase/auth";
 import * as Google from 'expo-auth-session';
@@ -89,3 +89,18 @@ export const updateUserProfile = (displayName: string, photoURL: string) => {
         console.log("No user is currently logged in.");
     }
 };
+
+// Get the current user
+export const getCurrentUser = () => {
+    onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/auth.user
+        const uid = user.uid;
+        // ...
+    } else {
+        // User is signed out
+        // ...
+    }
+    });
+}

@@ -5,10 +5,12 @@ import { StatusBar } from 'expo-status-bar';
 // Screens
 import LoginScreen from './screens/LoginScreen';
 import RegistrationScreen from './screens/RegistrationScreen';
+import Home from './screens/Home';
 import ProfileScreen from "./screens/ProfileScreen";
 
 // Auth Context
 import { AuthProvider, useAuth } from "./context/AuthContext";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -22,7 +24,10 @@ function RootNavigator() {
   return (
     <Stack.Navigator>
       {user ? (
-        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+        </>
       ) : (
         <>
           <Stack.Screen name="Login" component={LoginScreen} />
