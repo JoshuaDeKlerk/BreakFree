@@ -1,3 +1,5 @@
+import "react-native-gesture-handler";
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
@@ -10,6 +12,7 @@ import ProfileScreen from "./screens/ProfileScreen";
 
 // Auth Context
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 
 const Stack = createNativeStackNavigator();
@@ -40,13 +43,14 @@ function RootNavigator() {
 
 export default function App() {
     return (
-
-      <AuthProvider>
-        <NavigationContainer>
-          <RootNavigator />
-          <StatusBar style="auto" />
-        </NavigationContainer>
-      </AuthProvider>
+      <GestureHandlerRootView style={{ flex: 1}}>
+        <AuthProvider>
+          <NavigationContainer>
+            <RootNavigator />
+            <StatusBar style="auto" />
+          </NavigationContainer>
+        </AuthProvider>       
+      </GestureHandlerRootView>
 
     );
 }
