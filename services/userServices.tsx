@@ -12,7 +12,7 @@ export const createUserDoc = async(uid: string) => {
             habitType: "vaping",
             currentStreak: 0,
             longestStreak: 0,
-            lastIncident: null,
+            lastIncident: serverTimestamp(),
             dailyAvgUses: 0,
             costPerUnit: 0,
             quitGoalDate: null

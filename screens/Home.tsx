@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import RadialTimer from "../components/RadialTimer";
 import { useEffect, useState } from "react";
@@ -7,10 +7,12 @@ import { doc, getDoc } from "firebase/firestore";
 import { createUserDoc } from "../services/userServices";
 import IntroPopup from "../components/IntroPopup";
 import { useAuth } from "../context/AuthContext";
+import VoiceJournalCard from "../components/VoiceJournalCard";
 
 const Home = () => {
 
   const [showIntro, setShowIntro] = useState(false);
+  const [showVoiceCard, setShowVoiceCard] = useState(false);
   const { user, loading } = useAuth();
 
   useEffect(() =>{
@@ -45,6 +47,8 @@ const Home = () => {
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <View style={styles.container}>
         <RadialTimer />
+
+        <Button title="Open Voice Journal" onPress={() => setShowVoiceCard(true)} />
       </View>
 
       {/* Intro popup */}
@@ -54,6 +58,9 @@ const Home = () => {
         confirmHint="Swipe to begin"
         disableBackdropDismiss={true}
       />
+
+      {/* Voice Journal */}
+      <VoiceJournalCard visible={showVoiceCard} onClose={() => setShowVoiceCard(false)} />
     </SafeAreaView>
   );
 }
