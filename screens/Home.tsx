@@ -44,7 +44,6 @@ const Home = () => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <View style={styles.container}>
-        <Text>Home</Text>
         <RadialTimer />
       </View>
 

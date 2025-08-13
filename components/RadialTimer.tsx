@@ -29,6 +29,10 @@ const RadialTimer = () => {
             setElapsedTime("No data");
             return;
         }
+        if (!data.lastIncident) {
+            setElapsedTime("No incidents yet");
+            return;
+        }
         const lastMs = data.lastIncident.toMillis();
         const diff = Date.now() - lastMs;
         setElapsedTime(formatDuration(diff));

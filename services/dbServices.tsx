@@ -1,23 +1,20 @@
-import { collection, doc, getDoc, getDocs, query, Timestamp, where } from "firebase/firestore";
+import { doc, getDoc, Timestamp } from "firebase/firestore";
 import { db } from "../firebase";
 
 export type CravingClock = {
-  lastIncident: Timestamp;
-  userId?: string;
+  lastIncident: Timestamp | null;
 };
 
 export const getCravingClockData = async (uid: string): Promise<CravingClock | null> => {
-  const byUidRef = doc(db, "timers", uid);
-  const byUidSnap = await getDoc(byUidRef);
-  if (byUidSnap.exists()) {
-    return byUidSnap.data() as CravingClock;
-  }
 
-  const q = query(collection(db, "timers"), where("userId", "==", uid));
-  const snaps = await getDocs(q);
-  if (!snaps.empty) {
-    return snaps.docs[0].data() as CravingClock;
-  }
+  // Reads data from db and from users table
+  const ref = doc(db, "users", uid)
+  const snap = await getDoc(ref);
+  if(!snap.exists()) return null;
 
-  return null;
+  // Sets data as a firestore timestamp
+  const data: any = snap.data() || {};
+  const lastIncident = data.lastIncident instanceof Timestamp ? data.lastIncident : null;
+
+  return {lastIncident}
 };
