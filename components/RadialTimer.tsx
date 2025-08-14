@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { getCravingClockData } from "../services/dbServices";
 
+// Converts to readable time format
 const formatDuration = (ms: number) => {
     const totalSec = Math.floor(ms / 1000);
     const days = Math.floor(totalSec / 86400);
@@ -15,45 +16,88 @@ const formatDuration = (ms: number) => {
         : `${hours}h ${minutes}m ${seconds}s`;
 }
 
-const RadialTimer = () => {
+type Props = { overrideLastIncidentMs?: number | null };
+
+const RadialTimer: React.FC<Props> = ({ overrideLastIncidentMs }) => {
     const { user } = useAuth();
     const [elapsedTime, setElapsedTime] = useState("");
 
+    // Keeps start time without rerendering
+    const lastMsRef = useRef<number | null>(null);
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    // Updates timestamp when a slip is logged
     useEffect(() => {
-    if (!user?.uid) return;
-
-    (async () => {
-        try {
-        const data = await getCravingClockData(user.uid); 
-        if (!data?.lastIncident) {
-            setElapsedTime("No data");
-            return;
+        if (overrideLastIncidentMs != null) {
+            lastMsRef.current = overrideLastIncidentMs;
+            setElapsedTime(formatDuration(Date.now() - overrideLastIncidentMs));
         }
-        if (!data.lastIncident) {
-            setElapsedTime("No incidents yet");
-            return;
-        }
-        const lastMs = data.lastIncident.toMillis();
-        const diff = Date.now() - lastMs;
-        setElapsedTime(formatDuration(diff));
-        } catch (e) {
-        console.log("Failed to load craving clock:", e);
-        setElapsedTime("Error");
-        }
-    })();
-    }, [user?.uid]);
+    }, [overrideLastIncidentMs]);
+
+    useEffect(() => {
+        if (!user?.uid) return;
+        
+        let cancelled = false;
+
+        (async () => {
+            try {
+            const data = await getCravingClockData(user.uid); 
+            const ts =data?.lastIncident;
+
+            // Shows if there wasn't a incident yet
+            if (!ts) {
+                if (!cancelled) setElapsedTime("No Data");
+                return;
+            }
+
+            // Runs when there wasnt a slip
+            if (overrideLastIncidentMs == null) {
+                lastMsRef.current =
+                    typeof (ts as any).toMillis === "function"
+                        ? (ts as any).toMillis()
+                        : Date.parse(String(ts));
+                if (!cancelled && lastMsRef.current != null) {
+                    setElapsedTime(formatDuration(Date.now() - lastMsRef.current))
+                }
+            }
+
+            // Clears old interval
+            if (intervalRef.current) clearInterval(intervalRef.current);
+
+            // Update time every second
+            intervalRef.current = setInterval(() => {
+                if (lastMsRef.current != null) {
+                    setElapsedTime(formatDuration(Date.now() - lastMsRef.current));
+                }
+            }, 1000);
+            } catch (e) {
+                console.log("Failed to load craving clock:", e);
+                if (!cancelled) setElapsedTime("Error");
+            }
+        })();
+        
+            // Cleans up unmount
+            return () => {
+                cancelled = true;
+                if (intervalRef.current) {
+                    clearInterval(intervalRef.current);
+                    intervalRef.current = null;
+                }
+            };
+
+        }, [user?.uid, overrideLastIncidentMs]);
 
 
-    return (
-        <View style={styles.container}>
-            <TextInput 
-                style={styles.timerText}
-                value={elapsedTime}
-                editable={false}
-            />
-        </View>
-    );
-}
+        return (
+            <View style={styles.container}>
+                <TextInput 
+                    style={styles.timerText}
+                    value={elapsedTime}
+                    editable={false}
+                />
+            </View>
+        );
+    }
 
 export default RadialTimer
 

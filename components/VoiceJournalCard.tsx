@@ -9,6 +9,7 @@ type Props = {
   visible: boolean;
   onClose: () => void;
   defaultType?: EntryType;
+  onSlip?: () => void;
 };
 
 // Tells expo-av how to record for different platforms
@@ -32,7 +33,7 @@ const recordingOptions: Audio.RecordingOptions = {
     web: undefined as any,
 };
 
-const VoiceJournalCard: React.FC<Props> = ({ visible, onClose, defaultType = "craving" }) => {
+const VoiceJournalCard: React.FC<Props> = ({ visible, onClose, defaultType = "craving", onSlip }) => {
 
     // From the AuthContext
     const {user} = useAuth();
@@ -160,6 +161,8 @@ const VoiceJournalCard: React.FC<Props> = ({ visible, onClose, defaultType = "cr
                     localUri: uri,
                     durationSec: sec,
                 });
+                // Runs onSlip function if its a slip
+                if (type === "slip") onSlip?.();
                 setMsg("Uploaded!")
             }
 

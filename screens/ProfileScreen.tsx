@@ -2,14 +2,12 @@ import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "reac
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/AuthContext";
 import { getUserInfo, logoutUser, updateUserProfile } from "../services/authServices";
-import { Button } from "@react-navigation/elements";
 import { useState } from "react";
 
 const Profile = () => {
     const { user } = useAuth();
     const [displayName, setDisplayName] = useState(user?.displayName || "");
     const [photoURL, setPhotoURL] = useState(user?.photoURL || "");
-
 
     // handle logout
     const handleLogout = () => {

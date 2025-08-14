@@ -13,6 +13,7 @@ const Home = () => {
 
   const [showIntro, setShowIntro] = useState(false);
   const [showVoiceCard, setShowVoiceCard] = useState(false);
+  const [lastIncidentMs, setLastIncidentMs] = useState<number | null>(null);
   const { user, loading } = useAuth();
 
   useEffect(() =>{
@@ -46,9 +47,13 @@ const Home = () => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <View style={styles.container}>
-        <RadialTimer />
 
+        {/* Radial Timer */}
+        <RadialTimer overrideLastIncidentMs={lastIncidentMs}/>
+
+        {/* Voice Card */}
         <Button title="Open Voice Journal" onPress={() => setShowVoiceCard(true)} />
+
       </View>
 
       {/* Intro popup */}
@@ -60,7 +65,11 @@ const Home = () => {
       />
 
       {/* Voice Journal */}
-      <VoiceJournalCard visible={showVoiceCard} onClose={() => setShowVoiceCard(false)} />
+      <VoiceJournalCard 
+        visible={showVoiceCard} 
+        onClose={() => setShowVoiceCard(false)} 
+        onSlip={() => setLastIncidentMs(Date.now())}
+      />
     </SafeAreaView>
   );
 }
