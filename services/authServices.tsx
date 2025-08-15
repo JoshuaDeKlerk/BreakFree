@@ -1,8 +1,5 @@
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, signOut, updateProfile } from "firebase/auth";
-import { auth, provider } from "../firebase";
-import { getRedirectResult } from "firebase/auth";
-import * as Google from 'expo-auth-session';
-import { signInWithCredential, GoogleAuthProvider } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { auth } from "../firebase";
 
 // Register using email and password
 export const registerUser = (email: string, password: string) => {

@@ -8,6 +8,7 @@ import { createUserDoc } from "../services/userServices";
 import IntroPopup from "../components/IntroPopup";
 import { useAuth } from "../context/AuthContext";
 import VoiceJournalCard from "../components/VoiceJournalCard";
+import MoneySavedCard from "../components/MoneySavedCard";
 
 const Home = () => {
 
@@ -51,6 +52,13 @@ const Home = () => {
         {/* Radial Timer */}
         <RadialTimer overrideLastIncidentMs={lastIncidentMs}/>
 
+        {/* Stats Row */}
+        <View style={styles.row}>
+          <View style={{ flex: 1 }}>
+            <MoneySavedCard />
+          </View>
+        </View>
+
         {/* Voice Card */}
         <Button title="Open Voice Journal" onPress={() => setShowVoiceCard(true)} />
 
@@ -80,5 +88,9 @@ const styles = StyleSheet.create({
     container: {
         padding: 20,
     },
-
+    row: {
+      flexDirection: "row",
+      gap: 12,
+      alignItems: "stretch",
+    }
 });
