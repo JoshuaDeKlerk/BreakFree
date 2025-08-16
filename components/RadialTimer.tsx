@@ -26,11 +26,22 @@ const RadialTimer: React.FC<Props> = ({ overrideLastIncidentMs }) => {
     const lastMsRef = useRef<number | null>(null);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+    // Function to make the radial clock start ticking if the intro popup is used
+    const startTicker = () => {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        intervalRef.current = setInterval(() => {
+            if (lastMsRef.current != null) {
+                setElapsedTime(formatDuration(Date.now() - lastMsRef.current));
+            }
+        }, 1000);
+    }
+
     // Updates timestamp when a slip is logged
     useEffect(() => {
         if (overrideLastIncidentMs != null) {
             lastMsRef.current = overrideLastIncidentMs;
             setElapsedTime(formatDuration(Date.now() - overrideLastIncidentMs));
+            startTicker();
         }
     }, [overrideLastIncidentMs]);
 
@@ -41,6 +52,8 @@ const RadialTimer: React.FC<Props> = ({ overrideLastIncidentMs }) => {
 
         (async () => {
             try {
+            if (overrideLastIncidentMs != null) return;
+
             const data = await getCravingClockData(user.uid); 
             const ts =data?.lastIncident;
 

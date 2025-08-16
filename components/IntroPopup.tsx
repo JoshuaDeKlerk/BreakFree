@@ -13,6 +13,7 @@ type Props = {
     confirmHint?: string;
     disableBackdropDismiss?: boolean;
     loading?: boolean;
+    onBeginClock?: (startedMs: number) => void;
 };
 
 const TRACK_WIDTH = 250;
@@ -30,6 +31,7 @@ const IntroPopup: React.FC<Props> = ({
     confirmHint = "Swipe to begin",
     disableBackdropDismiss = true,
     loading = false,
+    onBeginClock,
 }) => {
     
     const x = useSharedValue(0);
@@ -39,7 +41,8 @@ const IntroPopup: React.FC<Props> = ({
 
     // When slider is to the right function should run
     const handleConfirm = async () => {
-            try {
+        try {
+            onBeginClock?.(Date.now());
             await onConfirm();
         } finally {
             x.value = 0;

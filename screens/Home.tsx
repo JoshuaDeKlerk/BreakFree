@@ -3,12 +3,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import RadialTimer from "../components/RadialTimer";
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { createUserDoc } from "../services/userServices";
 import IntroPopup from "../components/IntroPopup";
 import { useAuth } from "../context/AuthContext";
 import VoiceJournalCard from "../components/VoiceJournalCard";
 import MoneySavedCard from "../components/MoneySavedCard";
+import StreakCard from "../components/StreakCard";
 
 const Home = () => {
 
@@ -40,7 +41,17 @@ const Home = () => {
 
     const handleConfirmIntro = async () => {
     if (!user?.uid) return;
-    await createUserDoc(user.uid); // creates the user if their is no user
+
+    // Creates user if there is no user
+    await createUserDoc(user.uid); 
+    
+    const now = Date.now();
+    setLastIncidentMs(now);
+
+    await updateDoc(doc(db, "users", user.uid), {
+      lastIncident: serverTimestamp(),
+    });      
+
     setShowIntro(false);
   };
 
@@ -54,8 +65,14 @@ const Home = () => {
 
         {/* Stats Row */}
         <View style={styles.row}>
+          {/* Money Saved Card */}
           <View style={{ flex: 1 }}>
             <MoneySavedCard />
+          </View>
+
+          {/* Streak Card */}
+          <View style={{ flex: 1 }}>
+            <StreakCard />
           </View>
         </View>
 

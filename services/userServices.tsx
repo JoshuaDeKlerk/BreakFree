@@ -1,6 +1,6 @@
-import { doc, DocumentData, getDoc, onSnapshot, serverTimestamp, setDoc } from "firebase/firestore"
+import { doc, DocumentData, getDoc, onSnapshot, runTransaction, serverTimestamp, setDoc, Timestamp } from "firebase/firestore"
 import { db } from "../firebase"
-import { useAuth } from "../context/AuthContext";
+import { computeCurrentStreakDays } from "../utils/streak";
 
 // function for creating user collection
 export const createUserDoc = async(uid: string) => {
@@ -36,4 +36,33 @@ export const listenToUserDoc = (
         (snap) => onData(snap.exists() ? snap.data() : undefined),
         onError
     );
+};
+
+// function for streaks
+export const recordSlip = async (uid: string) => {
+    const ref = userDocRef(uid);
+
+    await runTransaction(db, async (tx) => {
+        const snap = await tx.get(ref);
+        const d = (snap.exists() ? (snap.data() as DocumentData) : null) ?? {};
+
+        const CurrentStreakDays = computeCurrentStreakDays({
+            lastIncident: d.lastIncident as Timestamp | undefined,
+            createdAt: d.createdAt as Timestamp | undefined,
+            now: Date.now(),
+        });
+
+        const prevLongest = Number(d.longestStreak ?? 0);
+        const nextLongest = Math.max(prevLongest, CurrentStreakDays);
+
+        tx.set(
+            ref,
+            {
+                lastIncident: serverTimestamp(),
+                CurrentStreakDays: 0,
+                longestStreak: nextLongest,
+            },
+            { merge: true }
+        );
+    });
 };
