@@ -11,7 +11,6 @@ export const createUserDoc = async(uid: string) => {
             createdAt: serverTimestamp(),
             onboardingCompleted: true,
             habitType: "vaping",
-            currentStreak: 0,
             longestStreak: 0,
             lastIncident: serverTimestamp(),
             dailyAvgUses: 0,
@@ -46,20 +45,19 @@ export const recordSlip = async (uid: string) => {
         const snap = await tx.get(ref);
         const d = (snap.exists() ? (snap.data() as DocumentData) : null) ?? {};
 
-        const CurrentStreakDays = computeCurrentStreakDays({
+        const currentStreakDays = computeCurrentStreakDays({
             lastIncident: d.lastIncident as Timestamp | undefined,
             createdAt: d.createdAt as Timestamp | undefined,
             now: Date.now(),
         });
 
         const prevLongest = Number(d.longestStreak ?? 0);
-        const nextLongest = Math.max(prevLongest, CurrentStreakDays);
+        const nextLongest = Math.max(prevLongest, currentStreakDays);
 
         tx.set(
             ref,
             {
                 lastIncident: serverTimestamp(),
-                CurrentStreakDays: 0,
                 longestStreak: nextLongest,
             },
             { merge: true }

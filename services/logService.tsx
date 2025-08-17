@@ -1,6 +1,7 @@
 import {  collection, doc, serverTimestamp, writeBatch } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "../firebase";
+import { recordSlip } from "./userServices";
 
 export type EntryType = "craving" | "slip" | "note";
 export type Mood = "bored" | "stressed" | "anxious" | "other" | null;
@@ -43,13 +44,10 @@ export async function uploadVoiceAndCreateEntry(params: {
     durationSec,
   });
 
-  // If slip, reset user's lastIncident
-  if (type === "slip") {
-    const userRef = doc(db, "users", uid);
-    batch.update(userRef, { lastIncident: serverTimestamp() });
-  }
-
   await batch.commit();
+  if (type === "slip") {
+    await recordSlip(uid);
+  }
 
   return { entryId, voiceNoteUrl };
 
