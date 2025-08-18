@@ -42,6 +42,7 @@ export async function uploadVoiceAndCreateEntry(params: {
     handled,
     voiceNoteUrl,
     durationSec,
+    hasVoiceNote: !!voiceNoteUrl,
   });
 
   await batch.commit();

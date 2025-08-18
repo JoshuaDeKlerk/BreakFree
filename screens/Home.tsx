@@ -95,7 +95,7 @@ const Home = () => {
     if (dir === "right") {
       navigation.navigate("Profile");
     } else if (dir === "left") {
-      // placeholder;
+      navigation.navigate("Logs");
     } else if (dir === "up") {
       // empty so that user can cancel
     } else if (dir === "down") {

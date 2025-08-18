@@ -24,19 +24,19 @@ const OrbitHint: React.FC<Props> = ({ active, dim = 0.35, bright = 0.9, inset = 
 
             <View style={[styles.rightWrap, { right: inset }]}>
                 <View style={[styles.tag, { opacity: alpha("right") }]}>
-                <Text style={styles.txt}>Profile →</Text>
+                    <Text style={styles.txt}>Profile →</Text>
                 </View>
             </View>
 
             <View style={[styles.downWrap, { bottom: inset }]}>
                 <View style={[styles.tag, { opacity: alpha("down") }]}>
-                <Text style={styles.txt}>Back ↓</Text>
+                    <Text style={styles.txt}>Back ↓</Text>
                 </View>
             </View>
 
             <View style={[styles.leftWrap, { left: inset }]}>
                 <View style={[styles.tag, { opacity: alpha("left") }]}>
-                <Text style={styles.txt}>← Placeholder</Text>
+                    <Text style={styles.txt}>← Logs</Text>
                 </View>
             </View>
         </View>

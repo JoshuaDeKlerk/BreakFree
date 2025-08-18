@@ -9,11 +9,11 @@ import LoginScreen from './screens/LoginScreen';
 import RegistrationScreen from './screens/RegistrationScreen';
 import Home from './screens/Home';
 import ProfileScreen from "./screens/ProfileScreen";
+import CravingLog from "./screens/CravingLog";
 
 // Auth Context
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +30,7 @@ function RootNavigator() {
         <>
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Logs" component={CravingLog} />
         </>
       ) : (
         <>
