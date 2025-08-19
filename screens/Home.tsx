@@ -93,11 +93,11 @@ const Home = () => {
   // Will use the direction to trigger a function
   const actOnDirection = (dir: SolidDir) => {
     if (dir === "right") {
-      navigation.navigate("Profile");
-    } else if (dir === "left") {
       navigation.navigate("Logs");
+    } else if (dir === "left") {
+      navigation.navigate("Exercise");
     } else if (dir === "up") {
-      // empty so that user can cancel
+      navigation.navigate("Profile");
     } else if (dir === "down") {
       // placeholder;
     }
