@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { Animated, StyleSheet, Text, TextInput, View } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { getCravingClockData } from "../services/dbServices";
+import { LinearGradient } from "expo-linear-gradient";
 
 // Converts to readable time format
 const formatDuration = (ms: number) => {
@@ -25,6 +26,20 @@ const RadialTimer: React.FC<Props> = ({ overrideLastIncidentMs }) => {
     // Keeps start time without rerendering
     const lastMsRef = useRef<number | null>(null);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    // Pulse effect
+    const pulse = useRef(new Animated.Value(0)).current;
+    useEffect(() => {
+        const loop = Animated.loop(
+        Animated.sequence([
+            Animated.timing(pulse, { toValue: 1, duration: 1500, useNativeDriver: true }),
+            Animated.timing(pulse, { toValue: 0, duration: 1500, useNativeDriver: true }),
+        ])
+        );
+        loop.start();
+        return () => loop.stop();
+    }, [pulse]);
+    const scale = pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.015] });
 
     // Function to make the radial clock start ticking if the intro popup is used
     const startTicker = () => {
@@ -89,38 +104,100 @@ const RadialTimer: React.FC<Props> = ({ overrideLastIncidentMs }) => {
             }
         })();
         
-            // Cleans up unmount
-            return () => {
-                cancelled = true;
-                if (intervalRef.current) {
-                    clearInterval(intervalRef.current);
-                    intervalRef.current = null;
-                }
-            };
+        // Cleans up unmount
+        return () => {
+            cancelled = true;
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        };
 
         }, [user?.uid, overrideLastIncidentMs]);
 
+        const SIZE = 240;   
+        const THICK = 6;     
+        const INNER = SIZE - THICK * 2;
+        
+        const isStatus = elapsedTime === "No Data" || elapsedTime === "Error";
+
 
         return (
-            <View style={styles.container}>
-                <TextInput 
-                    style={styles.timerText}
-                    value={elapsedTime}
-                    editable={false}
-                />
+            <View style={styles.wrap}>
+                <Animated.View style={{ transform: [{ scale }] }}>
+                    {/* Gradient ring */}
+                    <LinearGradient
+                        colors={["#2651E0", "#5BDADE"]}
+                        start={{ x: 0, y: 1 }}
+                        end={{ x: 1, y: 0 }}
+                        style={{
+                            width: SIZE,
+                            height: SIZE,
+                            borderRadius: SIZE / 2,
+                            padding: THICK,
+                            shadowColor: "#5BDADE",
+                            shadowOpacity: 0.25,
+                            shadowRadius: 16,
+                            shadowOffset: { width: 0, height: 8 },
+                            elevation: 8,
+                        }}
+                    >
+                    {/* Inner circle */}
+                    <View style={[ styles.circle, { width: INNER, height: INNER, borderRadius: 800 } ]}>
+                        <Text style={styles.label}>Since last slip</Text>
+
+                        <Text style={[ styles.time, isStatus && { color: "rgba(232,240,255,0.7)", fontWeight: "600" }]}
+                        accessibilityRole="text"
+                        accessibilityLabel={`Elapsed time ${elapsedTime}`}
+                        >
+                            {elapsedTime}
+                        </Text>
+
+                        <Text style={styles.subtle}>
+                            Keep going — one second at a time
+                        </Text>
+                    </View>
+                    </LinearGradient>
+                </Animated.View>
             </View>
         );
     }
 
 export default RadialTimer
 
+const BG = "#0F0F0F";
+const CARD_BG = "#1C1C1C";
+const TEXT_PRIMARY = "#E8F0FF";
+const TEXT_SECONDARY = "rgba(232,240,255,0.7)";
+
 const styles = StyleSheet.create({
-    container: {
-        padding: 20,
+    wrap: {
+        alignItems: "center",
+        justifyContent: "center",
+        paddingVertical: 24,
     },
-    timerText: {
-        fontSize: 24,
-        textAlign: 'center',
-        marginVertical: 20,
+    circle: {
+        backgroundColor: CARD_BG,
+        borderWidth: 1,
+        borderColor: "rgba(232,240,255,0.06)",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        overflow: "hidden"
+    },
+    label: {
+        color: TEXT_SECONDARY,
+        fontSize: 13,
+        letterSpacing: 0.3,
+    },
+    time: {
+        color: TEXT_PRIMARY,
+        fontSize: 28,
+        fontWeight: "800",
+        letterSpacing: 0.3,
+    },
+    subtle: {
+        color: TEXT_SECONDARY,
+        fontSize: 12,
     },
 });
