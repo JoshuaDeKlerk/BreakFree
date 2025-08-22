@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { listenToUserDoc } from "../services/userServices";
 import { computeMoneySaved } from "../utils/money";
+import { LinearGradient } from "expo-linear-gradient";
 
 const MoneySavedCard = () => {
     // Gets user from AuthContext
@@ -42,29 +43,58 @@ const MoneySavedCard = () => {
     }, [user?.uid, loading]);
 
     return (
-        <View style={styles.container}>
+        <View style={styles.card}>
             <Text style={styles.title}>Money Saved</Text>
-            <Text style={styles.amount}>
-                {Intl.NumberFormat(undefined, { style: "currency", currency: "ZAR", minimumFractionDigits: 0, maximumFractionDigits: 0}).format(saved)}
-            </Text>
+
+            <View style={styles.row}>
+                <Text style={styles.amount}>
+                {Intl.NumberFormat(undefined, {
+                    style: "currency",
+                    currency: "ZAR",
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                }).format(saved)}
+                </Text>
+            </View>
         </View>
     );
 }
 
 export default MoneySavedCard
 
+const TEXT_PRIMARY = "#E8F0FF";
+const TEXT_SECONDARY = "rgba(232,240,255,0.75)";
+const CARD_BG = "#15402fff";    
+const CARD_BORDER = "rgba(91,218,222,0.25)";
+
 const styles = StyleSheet.create({
-    container: {
+    card: {
+        backgroundColor: CARD_BG,
+        borderWidth: 1,
+        borderColor: CARD_BORDER,
+        borderRadius: 16,
         padding: 16,
-        borderRadius: 12,
-        backgroundColor: "#e6f7ec"
+        gap: 8,
+        shadowColor: "#000",
+        shadowOpacity: 0.25,
+        shadowRadius: 12,
+        shadowOffset: { width: 0, height: 8 },
+        elevation: 6,
     },
     title: {
-        fontSize: 12,
-        opacity: 0.6
+        color: TEXT_SECONDARY,
+        fontSize: 12.5,
+        letterSpacing: 0.3,
+    },
+    row: {
+        flexDirection: "row",
+        alignItems: "baseline",
+        gap: 8,
     },
     amount: {
+        color: TEXT_PRIMARY,
         fontSize: 24,
-        fontWeight: "700"
-    }
+        fontWeight: "800",
+        letterSpacing: 0.2,
+    },
 });
