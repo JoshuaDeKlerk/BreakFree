@@ -1,8 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ImageBackground, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { registerUser } from "../services/authServices";
+import { HoldPill } from "../components/HoldPill";
+import Logo from '../assets/Welcome/WelcomeLogo.svg';
 
 const RegistrationScreen = () => {
 
@@ -11,91 +13,107 @@ const RegistrationScreen = () => {
 
     const navigation:any = useNavigation();
 
-    const goToLogin = () => {
-        navigation.navigate('Login');
-    };
+    // Register user
+    const doRegister = () => registerUser(email, password);
+    // Navigate to login
+    const goToLogin = () => navigation.navigate('Login');
 
-    // Register Function
-    const register = () => {
-        // Call the registerUser function from authServices
-        registerUser(email, password);
-    };
-    
-  return (
-    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-      <View style={styles.container}>
+    return (
+        <ImageBackground
+        source={require("../assets/Login/LoginBg.png")}
+        style={styles.bg}
+        resizeMode="contain"
+        >
+            <SafeAreaView style={styles.safe}>
+                <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : undefined}
+                style={styles.container}
+                >
+                    <View style={styles.header}>
+                        <Logo width={200} height={200} />
+                    </View>
 
-        <Text style={styles.title}>Sign Up</Text>
+                    <View style={styles.card}>
+                        <Text style={styles.title}>Create Account</Text>
 
-        <TextInput
-            style={styles.inputField}
-            placeholder="Your Email"
-            onChangeText={newText => setEmail(newText)}
-            defaultValue={email}
-        />
+                        <Text style={styles.label}>Email</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={email}
+                            onChangeText={setEmail}
+                            placeholder="you@example.com"
+                            placeholderTextColor="rgba(232, 240, 255, 0.8)"
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                        />
 
-        <TextInput
-            style={styles.inputField}
-            placeholder="Your Password"
-            onChangeText={newText => setPassword(newText)}
-            defaultValue={password}
-            secureTextEntry
-        />
+                        <Text style={[styles.label, { marginTop: 14 }]}>Password</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={password}
+                            onChangeText={setPassword}
+                            placeholder="Create a password"
+                            placeholderTextColor="rgba(232, 240, 255, 0.8)"
+                            secureTextEntry
+                        />
 
-        <TouchableOpacity style={styles.button} onPress={register}>
-            <Text style={styles.buttonText}>Register Button</Text>
-        </TouchableOpacity>
-
-        <Pressable style={styles.LoginButton} onPress={goToLogin}>
-            <Text style={styles.LoginButtonText}>Log In Instead</Text>
-        </Pressable>
-
-      </View>
-    </SafeAreaView>
-  );
+                        <View style={{ display: "flex", gap: 12, marginTop: 40 }}>
+                            <HoldPill label="Hold to Create Account" onConfirm={doRegister} variant="primary" />
+                            <HoldPill label="Back to Login" onConfirm={goToLogin} variant="secondary" />
+                        </View>
+                    </View>
+                </KeyboardAvoidingView>
+            </SafeAreaView>
+        </ImageBackground>
+    );
 }
 
 export default RegistrationScreen
 
 const styles = StyleSheet.create({
+    bg: { 
+        flex: 1 
+    },
+    safe: { 
+        flex: 1 
+    },
     container: {
+        flex: 1,
+        paddingHorizontal: 24,
+        justifyContent: "center",
+    },
+    header: {
+        alignItems: "center",
+        marginBottom: 12,
+    },
+    card: {
         padding: 20,
     },
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
+        color: "#E8F0FF",
+        fontSize: 30,
+        fontWeight: "700",
+        letterSpacing: 0.3,
+        marginBottom: 30,
+        textAlign: "center",
+
     },
-    inputField: {
-        height: 40,
-        borderColor: 'gray',
+    label: {
+        color: "#E8F0FF",
+        fontSize: 12,
+        marginBottom: 6,
+        letterSpacing: 0.4,
+        marginLeft: 20,
+    },
+    input: {
+        height: 50,
+        borderRadius: 25,
+        paddingHorizontal: 14,
+        backgroundColor: "#2C2C2C",
+        color: "#E8F0FF",
         borderWidth: 1,
-        marginBottom: 15,
-        paddingHorizontal: 10,
-    },
-    button: {
-        backgroundColor: 'blue',
-        padding: 10,
-        borderRadius: 5,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 15,
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
-    },
-    LoginButton: {
-        backgroundColor: 'blue',
-        padding: 10,
-        borderRadius: 5,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    LoginButtonText: {
-        color: 'white',
-        marginRight: 5,
+        borderColor: "rgba(91,218,222,0.25)",
+        fontSize: 15,
     },
 });
