@@ -1,4 +1,5 @@
 import { Audio, AVPlaybackStatusSuccess } from "expo-av";
+import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -72,80 +73,161 @@ const VoiceNoteCard: React.FC<Props> = ({ entry }) => {
         };
     }, [sound]);
 
+    const alert = !entry.handled;
+
     return (
-        <View style={[styles.card, !entry.handled && styles.cardDanger]}>
-            <Pressable style={[styles.playBtn, !entry.handled && styles.playBtnDanger]} onPress={playToggle}>
-                <Text style={styles.playTxt}>
-                    {isPlaying ? "⏸" : "▶︎"}
-                </Text>
+        <View style={[styles.card, alert && styles.cardAlert]}>
+            {/* Play button with gradient ring */}
+            <Pressable onPress={playToggle} style={styles.playWrap}>
+                <LinearGradient
+                colors={isPlaying ? ["#5BDADE", "#2651E0"] : ["#2F2F2F", "#2C2C2C"]}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 1, y: 0 }}
+                style={[styles.playOuter, isPlaying && styles.playOuterActive, alert && styles.playOuterAlert]}
+                >
+                <View style={styles.playInner}>
+                    <Text style={styles.playTxt}>{isPlaying ? "⏸" : "▶︎"}</Text>
+                </View>
+                </LinearGradient>
             </Pressable>
 
+            {/* Middle: mood + date */}
             <View style={{ flex: 1 }}>
-                <Text style={[styles.mood, !entry.handled && styles.textDanger]}>
+                <View style={styles.moodRow}>
+                <Text style={[styles.mood, alert && styles.textAlert]} numberOfLines={1}>
                     {entry.mood ?? "No Mood"}
                 </Text>
-
-                <Text style={styles.date}>
-                    {formatDate(entry.timestamp)}
-                </Text>
+                {/* subtle dot separator */}
+                <View style={styles.dot} />
+                <Text style={styles.date}>{formatDate(entry.timestamp)}</Text>
+                </View>
             </View>
 
-            <Text style={[styles.duration, !entry.handled && styles.textDanger]}>
-                {formatDuration(entry.durationSec)}
-            </Text>
+            {/* Right: duration pill */}
+            <LinearGradient
+                colors={alert ? ["#FF6B6E", "#FF9AA2"] : ["#2651E0", "#5BDADE"]}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.durPill}
+            >
+                <View style={styles.durInner}>
+                <Text style={[styles.duration, alert && styles.textAlert]}>{formatDuration(entry.durationSec)}</Text>
+                </View>
+            </LinearGradient>
         </View>
     );
 };
 
 export default VoiceNoteCard;
 
+const CARD_BG = "#1C1C1C";
+const TEXT_PRIMARY = "#E8F0FF";
+const TEXT_SECONDARY = "rgba(232,240,255,0.7)";
+const CYAN_BORDER = "rgba(91,218,222,0.25)";
+
 const styles = StyleSheet.create({
     card: {
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: "#fff",
-        borderRadius: 12,
+        backgroundColor: CARD_BG,
+        borderRadius: 16,
         padding: 12,
         marginVertical: 6,
         borderWidth: 1,
-        borderColor: "#eee",
+        borderColor: CYAN_BORDER,
+        shadowColor: "#000",
+        shadowOpacity: 0.25,
+        shadowRadius: 12,
+        shadowOffset: { width: 0, height: 8 },
+        elevation: 6,
+        gap: 12,
     },
-    cardDanger: {
-        backgroundColor: "#fff5f5",
-        borderColor: "#ffcccc",
+    cardAlert: {
+        borderColor: "rgba(255,107,110,0.45)",
+        backgroundColor: "#261c1d",
     },
-    playBtn: {
-        width: 44,
-        height: 44,
-        borderRadius: 22,
+
+    // Play button
+    playWrap: { width: 56, height: 56 },
+    playOuter: {
+        flex: 1,
+        borderRadius: 28,
+        padding: 2, // gradient ring thickness
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    playOuterActive: {
+        shadowColor: "#5BDADE",
+        shadowOpacity: 0.45,
+        shadowRadius: 12,
+        shadowOffset: { width: 0, height: 6 },
+        elevation: 8,
+    },
+    playOuterAlert: {
+        shadowColor: "#FF6B6E",
+    },
+    playInner: {
+        width: "100%",
+        height: "100%",
+        borderRadius: 26,
+        backgroundColor: CARD_BG,
+        borderWidth: 1,
+        borderColor: "rgba(232,240,255,0.06)",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#111",
-        marginRight: 12,
-    },
-    playBtnDanger: {
-        backgroundColor: "#c1121f",
     },
     playTxt: {
-        color: "white",
+        color: TEXT_PRIMARY,
         fontSize: 18,
         fontWeight: "700",
     },
+
+    // Middle
+    moodRow: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
     mood: {
         fontSize: 16,
-        fontWeight: "600",
-        color: "#111",
+        fontWeight: "700",
+        color: TEXT_PRIMARY,
+        maxWidth: "70%",
+    },
+    dot: {
+        width: 4,
+        height: 4,
+        borderRadius: 2,
+        backgroundColor: "rgba(232,240,255,0.35)",
+        marginHorizontal: 8,
     },
     date: {
         fontSize: 12,
-        color: "#666",
-        marginTop: 2,
+        color: TEXT_SECONDARY,
+    },
+
+    // Duration pill (right)
+    durPill: {
+        borderRadius: 999,
+        padding: 1.5,
+        minWidth: 62,
+    },
+    durInner: {
+        backgroundColor: CARD_BG,
+        borderRadius: 999,
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        alignItems: "center",
+        justifyContent: "center",
     },
     duration: {
-        fontWeight: "700",
-        color: "#111",
+        fontWeight: "800",
+        color: TEXT_PRIMARY,
+        letterSpacing: 0.3,
+        fontSize: 13,
     },
-    textDanger: {
-        color: "#b31313",
+
+    // Alert text tone
+    textAlert: {
+        color: "#FF9AA2",
     },
 });
