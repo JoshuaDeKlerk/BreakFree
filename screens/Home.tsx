@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -19,6 +19,8 @@ import VoiceJournalCard from "../components/VoiceJournalCard";
 import MoneySavedCard from "../components/MoneySavedCard";
 import StreakCard from "../components/StreakCard";
 import OrbitHint, { HintDir } from "../components/OrbitHint";
+import { StatusBar } from "expo-status-bar";
+import { LinearGradient } from "expo-linear-gradient";
 
 type Dir = "up" | "down" | "left" | "right" | null;
 type SolidDir = "up" | "down" | "left" | "right";
@@ -124,34 +126,49 @@ const Home = () => {
     .runOnJS(true);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+    <SafeAreaView style={styles.safe}>
+      <StatusBar style="light" />
       <View style={styles.container}>
-        <GestureDetector gesture={pan}>
-          <View style={styles.timerBlock} accessible accessibilityLabel="Swipe right for Profile, Down To Cancel">
-            {/* Radial Timer */}
-            <RadialTimer overrideLastIncidentMs={lastIncidentMs}/>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.heading}>Home</Text>
+          <Text style={styles.subheading}>Swipe on the clock to navigate.</Text>
+        </View>
 
-            {/* Nav Overlay */}
+        {/* Timer Card */}
+        <GestureDetector gesture={pan}>
+          <View
+            style={styles.timerCard}
+            accessible
+            accessibilityLabel="Swipe on the clock: up to Profile, left to Exercise, right to Logs"
+          >
+            <RadialTimer overrideLastIncidentMs={lastIncidentMs} />
             {active && <OrbitHint active={active} />}
           </View>
         </GestureDetector>
 
-        {/* Stats Row */}
-        <View style={styles.row}>
-          {/* Money Saved Card */}
-          <View style={{ flex: 1 }}>
-            <MoneySavedCard />
-          </View>
-
-          {/* Streak Card */}
-          <View style={{ flex: 1 }}>
-            <StreakCard />
-          </View>
+        {/* Stats (stacked) */}
+        <View style={styles.statsStack}>
+          <StreakCard />
+          <MoneySavedCard />
         </View>
 
-        {/* Voice Card */}
-        <Button title="Open Voice Journal" onPress={() => setShowVoiceCard(true)} />
-
+        {/* Voice Journal CTA */}
+        <Pressable
+          onPress={() => setShowVoiceCard(true)}
+          style={styles.ctaButton}
+          accessibilityRole="button"
+          android_ripple={{ color: "rgba(255,255,255,0.08)", borderless: false }}
+        >
+          <LinearGradient
+            colors={["#2651E0", "#5BDADE"]}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.ctaGrad}
+          >
+            <Text style={styles.ctaTxt}>Open Voice Journal</Text>
+          </LinearGradient>
+        </Pressable>
       </View>
 
       {/* Intro popup */}
@@ -163,9 +180,9 @@ const Home = () => {
       />
 
       {/* Voice Journal */}
-      <VoiceJournalCard 
-        visible={showVoiceCard} 
-        onClose={() => setShowVoiceCard(false)} 
+      <VoiceJournalCard
+        visible={showVoiceCard}
+        onClose={() => setShowVoiceCard(false)}
         onSlip={() => setLastIncidentMs(Date.now())}
       />
     </SafeAreaView>
@@ -174,26 +191,57 @@ const Home = () => {
 
 export default Home;
 
+const BG = "#1C1C1C";
+const TEXT_PRIMARY = "#E8F0FF";
+const TEXT_SECONDARY = "rgba(232,240,255,0.7)";
+
+
 const styles = StyleSheet.create({
-  container: {
-      padding: 20,
+  safe: {
+    flex: 1,
+    backgroundColor: BG,
   },
-  timerBlock: {
-    width: 300,
-    height: 340,
+  container: {
+    paddingHorizontal: 20,
+    paddingTop: 6,
+    gap: 16,
+    flex: 1,
+  },
+  header: { paddingTop: 6 },
+  heading: {
+    color: TEXT_PRIMARY,
+    fontSize: 24,
+    fontWeight: "800",
+    letterSpacing: 0.2,
+  },
+  subheading: {
+    color: TEXT_SECONDARY,
+    fontSize: 13.5,
+    marginTop: 4,
+  },
+  timerCard: {
     alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
   },
-  hint: { 
-    position: "absolute", 
-    bottom: 0, 
-    opacity: 0.6, 
-    fontSize: 12 
+  statsStack: {
+    gap: 12, 
   },
-  row: {
-    flexDirection: "row",
-    gap: 12,
-    alignItems: "stretch",
-  }
+  ctaButton: {
+    overflow: "hidden",
+    borderRadius: 999,
+    alignSelf: "stretch",
+  },
+  ctaGrad: {
+    borderRadius: 999,
+    paddingVertical: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ctaTxt: {
+    color: TEXT_PRIMARY,
+    fontWeight: "800",
+    letterSpacing: 0.3,
+    fontSize: 15,
+  },
 });
