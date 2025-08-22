@@ -36,7 +36,8 @@
     "react-native-worklets": "^0.4.1",
     "expo-blur": "~14.1.5",
     "expo-linear-gradient": "~14.1.5",
-    "expo-font": "~13.3.2"
+    "expo-font": "~13.3.2",
+    "@expo/vector-icons": "^14.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

@@ -8,15 +8,13 @@ import { StatusBar } from 'expo-status-bar';
 // Screens
 import LoginScreen from './screens/LoginScreen';
 import RegistrationScreen from './screens/RegistrationScreen';
-import Home from './screens/Home';
-import ProfileScreen from "./screens/ProfileScreen";
-import CravingLog from "./screens/CravingLog";
-import BreathingExercise from "./screens/Breathing";
 import WelcomeScreen from "./screens/Welcome";
 
 // Auth Context
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import MainLayout from "./MainLayout";
+import { navRef } from "./navigationRef";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,10 +29,7 @@ function RootNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {user ? (
         <>
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen name="Logs" component={CravingLog} />
-          <Stack.Screen name="Exercise" component={BreathingExercise} />
+          <Stack.Screen name="Main" component={MainLayout} />
         </>
       ) : (
         <>
@@ -51,7 +46,7 @@ export default function App() {
     return (
       <GestureHandlerRootView style={{ flex: 1}}>
         <AuthProvider>
-          <NavigationContainer>
+          <NavigationContainer ref={navRef}>
             <RootNavigator />
             <StatusBar style="auto" />
           </NavigationContainer>
