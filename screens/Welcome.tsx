@@ -16,7 +16,7 @@ const WelcomeScreen = ( ) => {
     const translateX = useSharedValue(0);
     const dragStartX = useSharedValue(0);
 
-    // Pill width to make sure the slider doesnt go over it
+    // Pill width to make sure the slider doesn't go over it
     const [pillWidth, setPillWidth] = useState(0);
 
     // Constraints for the slider
