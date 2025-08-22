@@ -28,7 +28,8 @@
     },
     "plugins": [
       "expo-build-properties",
-      "expo-audio"
+      "expo-audio",
+      "expo-font"
     ]
   }
 }
