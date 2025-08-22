@@ -1,4 +1,4 @@
-import { doc, DocumentData, getDoc, onSnapshot, runTransaction, serverTimestamp, setDoc, Timestamp } from "firebase/firestore"
+import { doc, DocumentData, getDoc, increment, onSnapshot, runTransaction, serverTimestamp, setDoc, Timestamp, updateDoc } from "firebase/firestore"
 import { db } from "../firebase"
 import { computeCurrentStreakDays } from "../utils/streak";
 
@@ -63,4 +63,18 @@ export const recordSlip = async (uid: string) => {
             { merge: true }
         );
     });
+};
+
+// set weekly spend (ZAR per week)
+export const setCostPerWeek = async (uid: string, amount: number) => {
+  const ref = userDocRef(uid);
+  const sanitized = Math.max(0, Math.round(amount));
+  await updateDoc(ref, { costPerWeek: sanitized });
+};
+
+// add a spend adjustment (subtracts from saved total)
+export const addManualSpend = async (uid: string, amount: number) => {
+  const ref = userDocRef(uid);
+  const sanitized = Math.max(0, Math.round(amount));
+  await updateDoc(ref, { manualSpendAdjustments: increment(sanitized) });
 };

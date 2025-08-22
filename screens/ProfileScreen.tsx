@@ -74,7 +74,6 @@ const Profile = () => {
                     <View style={styles.identBlock}>
                         <Text style={styles.identName}>{displayName || "Unnamed"}</Text>
                         {!!email && <Text style={styles.identMeta}>{email}</Text>}
-                        {!!uid && <Text style={styles.identMetaDim}>{uid}</Text>}
                     </View>
                 </View>
 

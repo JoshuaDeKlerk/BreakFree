@@ -21,6 +21,7 @@ import StreakCard from "../components/StreakCard";
 import OrbitHint, { HintDir } from "../components/OrbitHint";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
+import MoneySavedPopup from "./MoneySavedPopup";
 
 type Dir = "up" | "down" | "left" | "right" | null;
 type SolidDir = "up" | "down" | "left" | "right";
@@ -29,6 +30,7 @@ const Home = () => {
 
   const [showIntro, setShowIntro] = useState(false);
   const [showVoiceCard, setShowVoiceCard] = useState(false);
+  const [showMoneyPopup, setShowMoneyPopup] = useState(false);
   const [lastIncidentMs, setLastIncidentMs] = useState<number | null>(null);
   const [active, setActive] = useState<HintDir>(null);
 
@@ -150,7 +152,9 @@ const Home = () => {
         {/* Stats (stacked) */}
         <View style={styles.statsStack}>
           <StreakCard />
-          <MoneySavedCard />
+          <Pressable onPress={() => setShowMoneyPopup(true)} style={{ borderRadius: 16 }}>
+            <MoneySavedCard />
+          </Pressable>
         </View>
 
         {/* Voice Journal CTA */}
@@ -185,6 +189,9 @@ const Home = () => {
         onClose={() => setShowVoiceCard(false)}
         onSlip={() => setLastIncidentMs(Date.now())}
       />
+      
+      {/* Money Saved Popup */}
+      <MoneySavedPopup visible={showMoneyPopup} onClose={() => setShowMoneyPopup(false)} />
     </SafeAreaView>
   );
 };
