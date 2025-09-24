@@ -276,7 +276,7 @@ Contributions are welcome! If you'd like to help improve BreakFree:
 
 <br/>
 
-📁 [App Video]([https://github.com/JoshuaDeKlerk/BreakFree](https://drive.google.com/file/d/15EalcfsQlIDS2BrYduIRTqiB_NGztvFE/view?usp=drive_link))  
+📁 [App Video](https://drive.google.com/file/d/15EalcfsQlIDS2BrYduIRTqiB_NGztvFE/view?usp=drive_link)  
 
 ---
 
