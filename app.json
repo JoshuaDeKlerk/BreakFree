@@ -3,33 +3,18 @@
     "name": "BreakFree",
     "slug": "BreakFree",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "runtimeVersion": "1.0.0",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.BreakFree"
-    },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-build-properties",
-      "expo-audio",
-      "expo-font"
-    ]
+    "extra": {
+      "eas": {
+        "projectId": "7f5b3bfb-9fe5-4498-9cd2-aa6390795a61"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/7f5b3bfb-9fe5-4498-9cd2-aa6390795a61"
+    }
   }
 }
