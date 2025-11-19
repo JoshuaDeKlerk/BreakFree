@@ -9,7 +9,17 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#1C1C1C"
+    },
+    "android": {
+      "package": "com.yourname.breakfree",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon-foreground.png",
+        "backgroundColor": "#1C1C1C"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.yourname.breakfree"
     },
     "web": {
       "favicon": "./assets/favicon.png"
