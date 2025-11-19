@@ -1,4 +1,4 @@
-package com.yourname.breakfree
+package com.Joshua.breakfree
 
 import android.app.Application
 import android.content.res.Configuration
