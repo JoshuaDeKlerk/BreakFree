@@ -1,4 +1,4 @@
-package com.anonymous.BreakFree
+package com.yourname.breakfree
 
 import android.app.Application
 import android.content.res.Configuration

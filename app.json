@@ -12,9 +12,9 @@
       "backgroundColor": "#1C1C1C"
     },
     "android": {
-      "package": "com.yourname.breakfree",
+      "package": "com.Joshua.breakfree",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon-foreground.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1C1C1C"
       }
     },
