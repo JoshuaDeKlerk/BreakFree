@@ -104,7 +104,7 @@ const WelcomeScreen = ( ) => {
         <ImageBackground
             source={require('../assets/Welcome/WelcomeBg.png')}
             style={styles.container}
-            resizeMode="contain"
+            resizeMode="cover"
         >
             <StatusBar style="light" />
 
@@ -165,8 +165,20 @@ const WelcomeScreen = ( ) => {
 export default WelcomeScreen;
 
 const styles = StyleSheet.create({
+    bg: { 
+        flex: 1,
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#000' // match your app background so no white shows
+    },
+    safe: { 
+        flex: 1,
+        backgroundColor: 'transparent' // or '#000' if you prefer the safe area filled
+    },
     container: {
         flex: 1,
+        paddingHorizontal: 24,
+        justifyContent: "center",
     },
     overlay: {
         flex: 1,
